@@ -13,7 +13,15 @@ function ImageToPdf():ReactElement {
   
     const handleUpload = ():void => {
       if (selectedFiles.length > 0) {
-        selectedFiles.map(file => window.electron.ipcRenderer.send('uploadFiles',file.path));
+       try {
+        const fileArray :string[] = [];
+         selectedFiles.map(file => {
+          fileArray.push(file.path);
+        });
+        window.electron.ipcRenderer.send('uploadFiles',fileArray)
+       } catch (error) {
+        console.log("filed")
+       }
       }
     window.electron.ipcRenderer.send("greet", "hello main bitch")
     };
@@ -27,7 +35,6 @@ function ImageToPdf():ReactElement {
           ))}
         </div>
         <button onClick={handleUpload}>Upload</button>
-        {/* <button onClick={handleUpload}>click</button> */}
       </div>
     );
 }

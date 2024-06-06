@@ -1,10 +1,10 @@
-import ImageToPdf from './components/ImageToPdf'
+import Home from './components/Home'
 
 function App(): JSX.Element {
 
   return (
     <>
-    <ImageToPdf />
+    <Home />
     </>
   )
 }
