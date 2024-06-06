@@ -1,22 +1,13 @@
-import { ReactElement, useState } from "react";
-import ImageToPdf from "./ImageToPdf";
+import { ReactElement } from "react";
+import { Link } from "react-router-dom";
 
 export default function Home(): ReactElement {
-    const [imgToPdf, setImgToPdf] = useState<boolean>(false);
-    const imgToPdfHandler = ():void => {
-        if(imgToPdf == false){
-        setImgToPdf(true);
-        }else{
-            setImgToPdf(false);
-        }
-    }
 
   return (
     <div>
-<button onClick={imgToPdfHandler}>Image To PDF</button>
-{imgToPdf &&
-<ImageToPdf />
-}
+      <h1>Home</h1>
+      <Link to="/image-to-pdf"><button>Image To PDF</button></Link>
+      <Link to="/pdf-split"><button>PDF Split</button></Link>
     </div>
   )
 }

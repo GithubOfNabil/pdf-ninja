@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
 
 
-function ImageToPdf():ReactElement {
+export default function ImageToPdf():ReactElement {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previewURLs, setPreviewURLs] = useState<string[]>([]);
   
@@ -20,7 +20,7 @@ function ImageToPdf():ReactElement {
         });
         window.electron.ipcRenderer.send('uploadFiles',fileArray)
        } catch (error) {
-        console.log("filed")
+        console.log("failed")
        }
       }
     window.electron.ipcRenderer.send("greet", "hello main bitch")
@@ -37,6 +37,4 @@ function ImageToPdf():ReactElement {
         <button onClick={handleUpload}>Upload</button>
       </div>
     );
-}
-
-export default ImageToPdf;
+};
