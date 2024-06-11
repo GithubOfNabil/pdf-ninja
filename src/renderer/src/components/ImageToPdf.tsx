@@ -1,6 +1,7 @@
 import { ReactElement, useState } from "react";
 
 
+
 export default function ImageToPdf():ReactElement {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previewURLs, setPreviewURLs] = useState<string[]>([]);
@@ -27,14 +28,18 @@ export default function ImageToPdf():ReactElement {
     };
   
     return (
-      <div>
+      <div className="">
         <input type="file" accept="image/*" multiple onChange={handleFileChange} />
-        <div>
+        <div className="flex flex-row flex-wrap gap-4 ">
           {previewURLs.map((url, index) => (
-            <img key={index} src={url} alt={`Preview ${index}`} style={{ width: '200px', height: 'auto', margin: '10px' }} />
+            <div className="w-64 p-1.5 bg-teal-100 rounded-lg shadow-md" key={index}>
+            <img key={index} src={url} alt={`Preview ${index}`} className="py-2" />
+            </div>
           ))}
         </div>
-        <button onClick={handleUpload}>Upload</button>
+        <div className="m-5">
+        <button className="w-36 h-8 bg-green-500 rounded-sm shadow-md" onClick={handleUpload}>Upload</button>
+        </div>
       </div>
     );
 };
