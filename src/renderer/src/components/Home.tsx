@@ -15,6 +15,7 @@ export default function Home(): ReactElement {
       <div className=" flex flex-row gap-2 ">
       <div className=" text-center w-32 border-solid rounded-md p-2 bg-teal-300 text-black font-semibold"><Link to="/image-to-pdf">Image To PDF</Link></div>
       <div className=" text-center w-32 border-solid rounded-md p-2 bg-teal-300 text-black font-semibold"><Link to="/pdf-split">PDF Split</Link></div>
+      <div className=" text-center w-32 border-solid rounded-md p-2 bg-teal-300 text-black font-semibold"><Link to="#">Coming..</Link></div>
       </div>
     </div>
   )

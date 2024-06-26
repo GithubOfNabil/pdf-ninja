@@ -9,6 +9,8 @@ export default function ImageToPdf(): ReactElement {
   const [primaryUploadForm, setPrimaryUploadForm] = useState<boolean>(true);
   const [deletedImageId, setDeletedImageId] = useState<number | null>(null);
   const [imageAdded, setImageAdded] = useState<number>(0);
+  const [savePath, setSavePath] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
 
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -26,11 +28,16 @@ export default function ImageToPdf(): ReactElement {
     setPreviewURLs(files.map(file => URL.createObjectURL(file)));
   };
 
-  const handleUpload = (): void => {
+  const handleCreatePdf = (pathSave: string): void => {
     if (selectedFiles.length > 0) {
       try {
-        selectedFiles.map((file) => console.log(file));
-        window.electron.ipcRenderer.send('uploadFiles', selectedFiles)
+        window.electron.ipcRenderer.send('imageToPdf', pathSave, selectedFiles)
+        window.electron.ipcRenderer.on('response', (_event, arg) => {
+          console.log('Received response:', arg);
+          if(arg == 'succeeded'){
+              setSuccess(true);
+          }
+        });
       } catch (error) {
         console.log("failed")
       }
@@ -58,7 +65,6 @@ export default function ImageToPdf(): ReactElement {
 
 useEffect(() => {
 
-    selectedFiles.map((file) => console.log(file));
 },[deletedImageId, selectedFiles])
 
 
@@ -75,6 +81,23 @@ useEffect(() => {
 
 },[imageAdded]) 
 
+
+const handleSavePath = (event: React.ChangeEvent<HTMLInputElement> ):void => {
+
+  const files = event.target.files;
+  console.log(files);
+  if (files && files.length > 0) {
+    const folder = files[0].path.substring(0, files[0].path.lastIndexOf('\\') + 1)
+    console.log(folder)
+    handleCreatePdf(folder)
+    setSavePath(folder);
+  }
+  console.log(savePath);
+} 
+
+useEffect(() => {
+
+},[success])
 
   return (
    <div className="min-h-screen bg-teal-800">
@@ -98,17 +121,34 @@ useEffect(() => {
         }
        { fileExist &&
         <div className="h-[99mm] w-[70mm] bg-teal-200 rounded-lg shadow-md flex justify-center items-center mt-5 ml-2">
-          <label htmlFor="fileUpload"><div className=" font-normal text-6xl cursor-pointer">+</div><input id="fileUpload" type="file" accept="image/*" multiple className=" hidden" onChange={addImage}/></label>
+          <label htmlFor="fileUpload">
+            <div className=" font-normal text-6xl cursor-pointer">+</div>
+            <input id="fileUpload" type="file" accept="image/*" multiple className=" hidden" onChange={addImage}/>
+          </label>
           </div>
        }
       </div>
       
       {/* Create PDF button */}
       {fileExist &&  
-        <div className=" flex justify-center items-center py-4">
-          <button className="w-36 h-8 bg-green-500 rounded-md shadow-md" onClick={handleUpload}>Create PDF</button>
-        </div>
+          <label htmlFor="savePath">
+            <div className=" flex justify-center items-center py-4">
+            <div className="w-36 h-8 bg-green-500 rounded-md shadow-md text-center" >Create PDF</div>
+            <input
+              type="file"
+              className="hidden"
+              /* @ts-expect-error: Jsx wont work */
+              webkitdirectory=""  
+              onChange={handleSavePath}
+              id="savePath" />
+          </div>
+            </label>
       }
+      {success && 
+      <div className=" bg-green-400 text-black">
+      PDF created
+    </div>
+    }
     </div>
   );
 };
