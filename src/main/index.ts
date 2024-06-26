@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain} from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
-import {handleUpload} from './lib'
+import icon from '../../resources/icon.ico?asset'
+import {handleImageToPdf} from './lib'
+import path from 'path';
 
 
 
@@ -13,9 +14,9 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'win32' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
@@ -58,7 +59,7 @@ app.whenReady().then(() => {
 // IPC 
     
 ipcMain.on('greet', (_e, msg) => console.log(msg))
-ipcMain.on('uploadFiles', handleUpload);
+ipcMain.on('imageToPdf', handleImageToPdf);
 
 
 

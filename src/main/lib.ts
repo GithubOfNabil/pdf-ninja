@@ -2,16 +2,21 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const sizeOf = require('image-size');
 
-export async function handleUpload (_event, imagePaths: string[]): Promise<string> {
-      const result = await imageToPdf(imagePaths);
+
+export async function handleImageToPdf (event,pathSave:string, imagePaths: string[]): Promise<string> {
+      const result = await imageToPdf(pathSave,imagePaths);
+      event.reply('response', result)
       return result;
   };
 
-  async function imageToPdf(imagePaths: string[]): Promise<string>{
+  async function imageToPdf(pathSave:string ,imagePaths: string[]): Promise<string>{
     return new Promise((resolve, reject) => {
       try {
+        const time = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '');
+        const fileName = `pdf-${time}.pdf`;
+        
         const doc = new PDFDocument({size:'A4', autoFirstPage: false});
-        const outPutDir = 'C:\\Users\\mailb\\OneDrive\\Documents\\output.pdf';
+        const outPutDir = `${pathSave}${fileName}`;
 
         const writeStream = fs.createWriteStream(outPutDir); 
         doc.pipe(writeStream);
@@ -49,8 +54,8 @@ export async function handleUpload (_event, imagePaths: string[]): Promise<strin
 
         doc.end();
         
-        writeStream.on('finish', () => resolve('PDF creation succeeded'));
-        writeStream.on('error', (error) => reject(`PDF creation failed: ${error.message}`));
+        writeStream.on('finish', () => resolve('succeeded'));
+        writeStream.on('error', (error) => reject(`failed: ${error.message}`));
 
       } catch (error) {
         if (error instanceof Error){
